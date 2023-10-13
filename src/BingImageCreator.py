@@ -7,14 +7,14 @@ import random
 import sys
 import time
 from functools import partial
-from typing import Dict
-from typing import List
-from typing import Union
+from http.cookies import SimpleCookie
+from typing import Dict, List, Union
 
 import httpx
 import pkg_resources
 import regex
 import requests
+from requests.utils import cookiejar_from_dict
 
 BING_URL = os.getenv("BING_URL", "https://www.bing.com")
 # Generate random IP between range 13.104.0.0/14
@@ -61,7 +61,6 @@ class ImageGen:
     Image generation by Microsoft Bing
     Parameters:
         auth_cookie: str
-        auth_cookie_SRCHHPGUSR: str
     Optional Parameters:
         debug_file: str
         quiet: bool
@@ -71,22 +70,30 @@ class ImageGen:
     def __init__(
         self,
         auth_cookie: str,
-        auth_cookie_SRCHHPGUSR: str,
         debug_file: Union[str, None] = None,
         quiet: bool = False,
         all_cookies: List[Dict] = None,
     ) -> None:
         self.session: requests.Session = requests.Session()
         self.session.headers = HEADERS
-        self.session.cookies.set("_U", auth_cookie)
-        self.session.cookies.set("SRCHHPGUSR", auth_cookie_SRCHHPGUSR)
-        if all_cookies:
-            for cookie in all_cookies:
-                self.session.cookies.set(cookie["name"], cookie["value"])
+        self.session.cookies = self.parse_cookie_string(auth_cookie)
         self.quiet = quiet
         self.debug_file = debug_file
         if self.debug_file:
             self.debug = partial(debug, self.debug_file)
+
+    @staticmethod
+    def parse_cookie_string(cookie_string):
+        cookie = SimpleCookie()
+        cookie.load(cookie_string)
+        cookies_dict = {}
+        cookiejar = None
+        for key, morsel in cookie.items():
+            cookies_dict[key] = morsel.value
+            cookiejar = cookiejar_from_dict(
+                cookies_dict, cookiejar=None, overwrite=True
+            )
+        return cookiejar
 
     def get_images(self, prompt: str) -> list:
         """
