@@ -1,7 +1,8 @@
 # BingImageCreator
+
 High quality image generation by Microsoft. Reverse engineered API.
 
-`pip3 install --upgrade BingImageCreator`
+`pip3 install .`
 
 ```
  $ python3 -m BingImageCreator -h
@@ -18,18 +19,11 @@ options:
 
 [Developer Documentation](https://github.com/acheong08/BingImageCreator/blob/main/DOCUMENTATION.md)
 
-
 ## Getting authentication
-### Chromium based browsers (Edge, Opera, Vivaldi, Brave)
-- Go to https://bing.com/.
-- F12 to open console
-- In the JavaScript console, type `cookieStore.get("_U").then(result => console.log(result.value))` and press enter
-- Copy the output. This is used in `--U` or `auth_cookie`.
 
-### Firefox
+### Browsers (Edge, Opera, Vivaldi, Brave, Firefox)
+
 - Go to https://bing.com/.
-- F12 to open developer tools
-- navigate to the storage tab
-- expand the cookies tab
-- click on the `https://bing.com` cookie
-- copy the value from the `_U`
+- F12 to open XHR call some api to get the `cookie`
+- call some api to copy the `cookie`and use this
+- Copy the output. This is used in `--U` or `auth_cookie`.
