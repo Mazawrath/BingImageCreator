@@ -4,14 +4,13 @@ import contextlib
 import json
 import os
 import random
-import sys
+import re
 import time
 from functools import partial
 from http.cookies import SimpleCookie
 from typing import Dict, List, Union
 
 import httpx
-import pkg_resources
 import regex
 import requests
 from requests.utils import cookiejar_from_dict
@@ -94,6 +93,21 @@ class ImageGen:
                 cookies_dict, cookiejar=None, overwrite=True
             )
         return cookiejar
+
+    def get_limit_left(self) -> int:
+        r = self.session.get("https://www.bing.com/create")
+        if not r.ok:
+            raise Exception("Can not get limit left from this `cookie` please check")
+        value = re.search(
+            r'<div id="token_bal" aria-label="[0-9]+.*">([0-9]+)</div>', r.text
+        )
+        if not value:
+            return 0
+        if value.group(1).isnumeric():
+            return int(value.group(1))
+        else:
+            print(f"error value: {value.group(1)} just return 0")
+            return 0
 
     def get_images(self, prompt: str) -> list:
         """
@@ -469,10 +483,6 @@ def main():
     )
 
     args = parser.parse_args()
-
-    if args.version:
-        print(pkg_resources.get_distribution("BingImageCreator").version)
-        sys.exit()
 
     # Load auth cookie
     cookie_json = None
