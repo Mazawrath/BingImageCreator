@@ -127,7 +127,7 @@ class ImageGen:
             url,
             allow_redirects=False,
             data=payload,
-            timeout=200,
+            timeout=300,
         )
         # check for content waring message
         if "this prompt is being reviewed" in response.text.lower():
@@ -152,7 +152,7 @@ class ImageGen:
         if response.status_code != 302:
             # if rt4 fails, try rt3
             url = f"{BING_URL}/images/create?q={url_encoded_prompt}&rt=3&FORM=GENCRE"
-            response = self.session.post(url, allow_redirects=False, timeout=200)
+            response = self.session.post(url, allow_redirects=False, timeout=300)
             if response.status_code != 302:
                 if self.debug_file:
                     self.debug(f"ERROR: {error_redirect}")
@@ -171,7 +171,7 @@ class ImageGen:
             print("Waiting for results...")
         start_wait = time.time()
         while True:
-            if int(time.time() - start_wait) > 200:
+            if int(time.time() - start_wait) > 300:
                 if self.debug_file:
                     self.debug(f"ERROR: {error_timeout}")
                 raise Exception(error_timeout)
