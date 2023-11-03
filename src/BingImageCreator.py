@@ -127,7 +127,7 @@ class ImageGen:
             url,
             allow_redirects=False,
             data=payload,
-            timeout=300,
+            timeout=600,
         )
         # check for content waring message
         if "this prompt is being reviewed" in response.text.lower():
@@ -152,7 +152,7 @@ class ImageGen:
         if response.status_code != 302:
             # if rt4 fails, try rt3
             url = f"{BING_URL}/images/create?q={url_encoded_prompt}&rt=3&FORM=GENCRE"
-            response = self.session.post(url, allow_redirects=False, timeout=300)
+            response = self.session.post(url, allow_redirects=False, timeout=600)
             if response.status_code != 302:
                 if self.debug_file:
                     self.debug(f"ERROR: {error_redirect}")
@@ -171,7 +171,7 @@ class ImageGen:
             print("Waiting for results...")
         start_wait = time.time()
         while True:
-            if int(time.time() - start_wait) > 300:
+            if int(time.time() - start_wait) > 600:
                 if self.debug_file:
                     self.debug(f"ERROR: {error_timeout}")
                 raise Exception(error_timeout)
@@ -343,7 +343,7 @@ class ImageGenAsync:
         while True:
             if not self.quiet:
                 print(".", end="", flush=True)
-            # By default, timeout is 300s, change as needed
+            # By default, timeout is 600s, change as needed
             response = await self.session.get(polling_url)
             if response.status_code != 200:
                 raise Exception("Could not get results")

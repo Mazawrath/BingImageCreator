@@ -2,11 +2,11 @@ from setuptools import find_packages
 from setuptools import setup
 
 setup(
-    name="BingImageCreator",
-    version="0.5.0",
+    name="BingImageCreator-fork",
+    version="0.6.0",
     license="GNU General Public License v2.0",
     author="Antonio Cheong",
-    author_email="acheong@student.dalat.org",
+    author_email="acheong@student.dalat.org, zouzou0208@gmail.com",
     description="High quality image generation by Microsoft. Reverse engineered API.",
     packages=find_packages("src"),
     package_dir={"": "src"},
