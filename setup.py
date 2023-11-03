@@ -1,18 +1,17 @@
-from setuptools import find_packages
-from setuptools import setup
+from setuptools import find_packages, setup
 
 setup(
     name="BingImageCreator-fork",
-    version="0.6.0",
+    version="0.6.1",
     license="GNU General Public License v2.0",
     author="Antonio Cheong",
     author_email="acheong@student.dalat.org, zouzou0208@gmail.com",
     description="High quality image generation by Microsoft. Reverse engineered API.",
     packages=find_packages("src"),
     package_dir={"": "src"},
-    url="https://github.com/acheong08/BingImageCreator",
+    url="https://github.com/yihong0618/BingImageCreator",
     project_urls={
-        "Bug Report": "https://github.com/acheong08/BingImageCreator/issues/new",
+        "Bug Report": "https://github.com/yihong0618/BingImageCreator/issues/new",
     },
     install_requires=[
         "httpx",
