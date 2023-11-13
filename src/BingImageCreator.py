@@ -88,6 +88,8 @@ class ImageGen:
         cookies_dict = {}
         cookiejar = None
         for key, morsel in cookie.items():
+            if key == "USRLOC":
+                continue
             cookies_dict[key] = morsel.value
             cookiejar = cookiejar_from_dict(
                 cookies_dict, cookiejar=None, overwrite=True
