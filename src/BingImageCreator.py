@@ -13,8 +13,10 @@ from typing import Dict, List, Union
 import httpx
 import regex
 import requests
+from fake_useragent import UserAgent
 from requests.utils import cookiejar_from_dict
 
+ua = UserAgent(browsers=["edge"])
 BING_URL = os.getenv("BING_URL", "https://www.bing.com")
 # Generate random IP between range 13.104.0.0/14
 FORWARDED_IP = (
@@ -27,7 +29,7 @@ HEADERS = {
     "content-type": "application/x-www-form-urlencoded",
     "referrer": "https://www.bing.com/images/create/",
     "origin": "https://www.bing.com",
-    "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.63",
+    "user-agent": ua.random,
     "x-forwarded-for": FORWARDED_IP,
 }
 
@@ -74,6 +76,7 @@ class ImageGen:
         all_cookies: List[Dict] = None,
     ) -> None:
         self.session: requests.Session = requests.Session()
+        HEADERS["user-agent"] = ua.random
         self.session.headers = HEADERS
         self.session.cookies = self.parse_cookie_string(auth_cookie)
         self.quiet = quiet
