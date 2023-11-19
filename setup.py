@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="BingImageCreator-fork",
-    version="0.7.0",
+    version="0.7.1",
     license="GNU General Public License v2.0",
     author="Antonio Cheong",
     author_email="acheong@student.dalat.org, zouzou0208@gmail.com",
@@ -17,6 +17,7 @@ setup(
         "httpx",
         "regex",
         "requests",
+        "fake-useragent",
     ],
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
