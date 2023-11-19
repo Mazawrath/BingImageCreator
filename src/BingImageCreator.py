@@ -100,6 +100,7 @@ class ImageGen:
         return cookiejar
 
     def get_limit_left(self) -> int:
+        self.session.headers["user-agent"] = ua.random
         r = self.session.get("https://www.bing.com/create")
         if not r.ok:
             raise Exception("Can not get limit left from this `cookie` please check")
@@ -128,6 +129,7 @@ class ImageGen:
         payload = f"q={url_encoded_prompt}&qs=ds"
         # https://www.bing.com/images/create?q=<PROMPT>&rt=3&FORM=GENCRE
         url = f"{BING_URL}/images/create?q={url_encoded_prompt}&rt=4&FORM=GENCRE"
+        self.session.headers["user-agent"] = ua.random
         response = self.session.post(
             url,
             allow_redirects=False,
