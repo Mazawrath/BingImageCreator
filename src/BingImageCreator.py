@@ -212,6 +212,7 @@ class ImageGen:
         # No images
         if not normal_image_links:
             raise Exception(error_no_images)
+        normal_image_links = [i for i in normal_image_links if not i.endswith(".svg")]
         return normal_image_links
 
     def save_images(
