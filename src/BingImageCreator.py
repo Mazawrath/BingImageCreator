@@ -106,7 +106,7 @@ class ImageGen:
             url,
             allow_redirects=False,
             data=payload,
-            timeout=200,
+            timeout=600,
         )
         # check for content waring message
         if "this prompt is being reviewed" in response.text.lower():
@@ -131,7 +131,7 @@ class ImageGen:
         if response.status_code != 302:
             # if rt4 fails, try rt3
             url = f"{BING_URL}/images/create?q={url_encoded_prompt}&rt=3&FORM=GENCRE"
-            response = self.session.post(url, allow_redirects=False, timeout=200)
+            response = self.session.post(url, allow_redirects=False, timeout=600)
             if response.status_code != 302:
                 if self.debug_file:
                     self.debug(f"ERROR: {error_redirect}")
@@ -184,6 +184,7 @@ class ImageGen:
         # No images
         if not normal_image_links:
             raise Exception(error_no_images)
+        normal_image_links = [i for i in normal_image_links if not i.endswith(".svg")]
         return normal_image_links
 
     def save_images(
@@ -305,7 +306,7 @@ class ImageGenAsync:
             response = await self.session.post(
                 url,
                 follow_redirects=False,
-                timeout=200,
+                timeout=600,
             )
             if response.status_code != 302:
                 print(f"ERROR: {response.text}")
@@ -350,6 +351,7 @@ class ImageGenAsync:
         # No images
         if not normal_image_links:
             raise Exception("No images")
+        normal_image_links = [i for i in normal_image_links if not i.endswith(".svg")]
         return normal_image_links
 
     async def save_images(
