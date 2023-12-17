@@ -287,10 +287,13 @@ class ImageGenAsync:
     ) -> None:
         if auth_cookie is None and not all_cookies:
             raise Exception("No auth cookie provided")
+        httpx_kwargs = {}
+        if proxy is not None:
+            httpx_kwargs["proxies"] = proxy
         self.session = httpx.AsyncClient(
             headers=HEADERS,
             trust_env=True,
-            proxies={"all://": proxy},
+            **httpx_kwargs,
         )
         if auth_cookie:
             self.session.cookies.update({"_U": auth_cookie})
