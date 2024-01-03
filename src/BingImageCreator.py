@@ -84,11 +84,13 @@ class ImageGen:
         debug_file: Union[str, None] = None,
         quiet: bool = False,
         all_cookies: List[Dict] = None,
+        proxy: str = None,
     ) -> None:
         self.session: requests.Session = requests.Session()
         HEADERS["user-agent"] = ua.random
         self.session.headers = HEADERS
         self.session.cookies = self.parse_cookie_string(auth_cookie)
+        self.session.proxies = {"all": proxy}
         self.quiet = quiet
         self.debug_file = debug_file
         if self.debug_file:
@@ -291,12 +293,17 @@ class ImageGenAsync:
         debug_file: Union[str, None] = None,
         quiet: bool = False,
         all_cookies: List[Dict] = None,
+        proxy: str = None,
     ) -> None:
         if auth_cookie is None and not all_cookies:
             raise Exception("No auth cookie provided")
+        httpx_kwargs = {}
+        if proxy is not None:
+            httpx_kwargs["proxies"] = proxy
         self.session = httpx.AsyncClient(
             headers=HEADERS,
             trust_env=True,
+            **httpx_kwargs,
         )
         if auth_cookie:
             self.session.cookies.update({"_U": auth_cookie})
@@ -389,6 +396,7 @@ class ImageGenAsync:
         # No images
         if not normal_image_links:
             raise Exception("No images")
+        normal_image_links = [i for i in normal_image_links if not i.endswith(".svg")]
         return normal_image_links
 
     async def save_images(
