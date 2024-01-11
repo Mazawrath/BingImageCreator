@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="BingImageCreator-fork",
-    version="0.7.4",
+    version="0.7.5",
     license="GNU General Public License v2.0",
     author="Antonio Cheong",
     author_email="acheong@student.dalat.org, zouzou0208@gmail.com",

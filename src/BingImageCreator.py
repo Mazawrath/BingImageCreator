@@ -5,11 +5,11 @@ import json
 import os
 import random
 import re
-import time
 import socket
-from urllib3.connection import HTTPConnection
+import time
 from functools import partial
 from http.cookies import SimpleCookie
+from sys import platform
 from typing import Dict, List, Union
 
 import httpx
@@ -17,14 +17,15 @@ import regex
 import requests
 from fake_useragent import UserAgent
 from requests.utils import cookiejar_from_dict
+from urllib3.connection import HTTPConnection
 
-
-HTTPConnection.default_socket_options = HTTPConnection.default_socket_options + [
-    (socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1),
-    (socket.SOL_TCP, socket.TCP_KEEPIDLE, 45),
-    (socket.SOL_TCP, socket.TCP_KEEPINTVL, 10),
-    (socket.SOL_TCP, socket.TCP_KEEPCNT, 6),
-]
+if platform.lower().startswith("linux"):
+    HTTPConnection.default_socket_options = HTTPConnection.default_socket_options + [
+        (socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1),
+        (socket.SOL_TCP, socket.TCP_KEEPIDLE, 45),
+        (socket.SOL_TCP, socket.TCP_KEEPINTVL, 10),
+        (socket.SOL_TCP, socket.TCP_KEEPCNT, 6),
+    ]
 
 ua = UserAgent(browsers=["edge"])
 BING_URL = os.getenv("BING_URL", "https://www.bing.com")
