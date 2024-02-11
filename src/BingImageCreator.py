@@ -129,7 +129,7 @@ class ImageGen:
             if self.debug_file:
                 self.debug(f"ERROR: {error_unsupported_lang}")
             raise Exception(error_unsupported_lang)
-        if "Please provide a more descriptive prompt" in response.text.lower():
+        if "please provide a more descriptive prompt" in response.text.lower():
             print(f"ERROR: {response.text}")
             raise Exception(error_descriptive)
         if response.status_code != 302:
