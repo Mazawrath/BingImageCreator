@@ -35,6 +35,7 @@ HEADERS = {
 # Error messages
 error_timeout = "Your request has timed out."
 error_redirect = "Redirect failed"
+error_descriptive = "Prompt not descriptive enough"
 error_blocked_prompt = (
     "Your prompt has been blocked by Bing. Try to change any bad words and try again."
 )
@@ -128,6 +129,9 @@ class ImageGen:
             if self.debug_file:
                 self.debug(f"ERROR: {error_unsupported_lang}")
             raise Exception(error_unsupported_lang)
+        if "Please provide a more descriptive prompt" in response.text.lower():
+            print(f"ERROR: {response.text}")
+            raise Exception(error_descriptive)
         if response.status_code != 302:
             # if rt4 fails, try rt3
             url = f"{BING_URL}/images/create?q={url_encoded_prompt}&rt=3&FORM=GENCRE"
