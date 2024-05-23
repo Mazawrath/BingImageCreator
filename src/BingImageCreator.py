@@ -12,9 +12,11 @@ from typing import Dict, List, Union
 
 import httpx
 import regex
-import requests
+import requests as req
 from fake_useragent import UserAgent
-from requests.utils import cookiejar_from_dict
+
+from curl_cffi import requests
+from curl_cffi.requests import Cookies
 
 ua = UserAgent(browsers=["edge"])
 BING_URL = os.getenv("BING_URL", "https://www.bing.com")
@@ -48,6 +50,8 @@ error_no_images = "No images"
 sending_message = "Sending request..."
 wait_message = "Waiting for results..."
 download_message = "\nDownloading images..."
+
+browser_version = "edge101"
 
 
 def debug(debug_file, text_var):
@@ -91,19 +95,13 @@ class ImageGen:
         cookie = SimpleCookie()
         cookie.load(cookie_string)
         cookies_dict = {}
-        cookiejar = None
         for key, morsel in cookie.items():
-            if key == "USRLOC":
-                continue
             cookies_dict[key] = morsel.value
-            cookiejar = cookiejar_from_dict(
-                cookies_dict, cookiejar=None, overwrite=True
-            )
-        return cookiejar
+        return Cookies(cookies_dict)
 
     def get_limit_left(self) -> int:
         self.session.headers["user-agent"] = ua.random
-        r = self.session.get("https://www.bing.com/create")
+        r = self.session.get("https://www.bing.com/create", impersonate=browser_version)
         if not r.ok:
             raise Exception("Can not get limit left from this `cookie` please check")
         value = re.search(
@@ -127,7 +125,7 @@ class ImageGen:
             print(sending_message)
         if self.debug_file:
             self.debug(sending_message)
-        url_encoded_prompt = requests.utils.quote(prompt)
+        url_encoded_prompt = req.utils.quote(prompt)
         payload = f"q={url_encoded_prompt}&qs=ds"
         # https://www.bing.com/images/create?q=<PROMPT>&rt=3&FORM=GENCRE
         url = f"{BING_URL}/images/create?q={url_encoded_prompt}&rt=4&FORM=GENCRE"
@@ -137,6 +135,7 @@ class ImageGen:
             allow_redirects=False,
             data=payload,
             timeout=600,
+            impersonate=browser_version,
         )
         # check for content waring message
         if "this prompt is being reviewed" in response.text.lower():
@@ -161,7 +160,9 @@ class ImageGen:
         if response.status_code != 302:
             # if rt4 fails, try rt3
             url = f"{BING_URL}/images/create?q={url_encoded_prompt}&rt=3&FORM=GENCRE"
-            response = self.session.post(url, allow_redirects=False, timeout=600)
+            response = self.session.post(
+                url, allow_redirects=False, timeout=600, impersonate=browser_version
+            )
             if response.status_code != 302:
                 if self.debug_file:
                     self.debug(f"ERROR: {error_redirect}")
@@ -186,7 +187,7 @@ class ImageGen:
                 raise Exception(error_timeout)
             if not self.quiet:
                 print(".", end="", flush=True)
-            response = self.session.get(polling_url)
+            response = self.session.get(polling_url, impersonate=browser_version)
             if response.status_code != 200:
                 if self.debug_file:
                     self.debug(f"ERROR: {error_noresults}")
@@ -250,7 +251,7 @@ class ImageGen:
                     os.path.join(output_dir, f"{fn}{jpeg_index}.jpeg")
                 ):
                     jpeg_index += 1
-                response = self.session.get(link)
+                response = req.get(link)
                 if response.status_code != 200:
                     raise Exception("Could not download image")
                 # save response to file

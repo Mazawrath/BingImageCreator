@@ -2,3 +2,4 @@ aiohttp
 regex
 requests
 fake-useragent
+curl_cffi

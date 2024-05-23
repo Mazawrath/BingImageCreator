@@ -2,9 +2,9 @@ from setuptools import find_packages, setup
 
 setup(
     name="BingImageCreator-fork",
-    version="0.7.6",
+    version="0.8.0",
     license="GNU General Public License v2.0",
-    author="Antonio Cheong",
+    author="Antonio Cheong, yihong0618",
     author_email="acheong@student.dalat.org, zouzou0208@gmail.com",
     description="High quality image generation by Microsoft. Reverse engineered API.",
     packages=find_packages("src"),
@@ -18,6 +18,7 @@ setup(
         "regex",
         "requests",
         "fake-useragent",
+        "curl_cffi",
     ],
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
