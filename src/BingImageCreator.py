@@ -14,6 +14,7 @@ import httpx
 import regex
 import requests as req
 from fake_useragent import UserAgent
+from urllib.parse import quote
 
 from curl_cffi import requests
 from curl_cffi.requests import Cookies
@@ -125,7 +126,7 @@ class ImageGen:
             print(sending_message)
         if self.debug_file:
             self.debug(sending_message)
-        url_encoded_prompt = req.utils.quote(prompt)
+        url_encoded_prompt = quote(prompt)
         payload = f"q={url_encoded_prompt}&qs=ds"
         # https://www.bing.com/images/create?q=<PROMPT>&rt=3&FORM=GENCRE
         url = f"{BING_URL}/images/create?q={url_encoded_prompt}&rt=4&FORM=GENCRE"
@@ -200,7 +201,7 @@ class ImageGen:
         # Use regex to search for src=""
         image_links = regex.findall(r'src="([^"]+)"', response.text)
         # Remove size limit
-        normal_image_links = [link.split("?w=")[0] for link in image_links]
+        normal_image_links = [link.split("?w=")[0] for link in image_links if "?w=" in link]
         # Remove duplicates
         normal_image_links = list(set(normal_image_links))
 
@@ -322,7 +323,7 @@ class ImageGenAsync:
         """
         if not self.quiet:
             print("Sending request...")
-        url_encoded_prompt = requests.utils.quote(prompt)
+        url_encoded_prompt = quote(prompt)
         # https://www.bing.com/images/create?q=<PROMPT>&rt=3&FORM=GENCRE
         url = f"{BING_URL}/images/create?q={url_encoded_prompt}&rt=3&FORM=GENCRE"
         payload = f"q={url_encoded_prompt}&qs=ds"
@@ -372,7 +373,7 @@ class ImageGenAsync:
         # Use regex to search for src=""
         image_links = regex.findall(r'src="([^"]+)"', content)
         # Remove size limit
-        normal_image_links = [link.split("?w=")[0] for link in image_links]
+        normal_image_links = [link.split("?w=")[0] for link in image_links if "?w=" in link]
         # Remove duplicates
         normal_image_links = list(set(normal_image_links))
 
