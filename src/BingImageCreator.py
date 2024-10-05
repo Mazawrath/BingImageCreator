@@ -201,7 +201,9 @@ class ImageGen:
         # Use regex to search for src=""
         image_links = regex.findall(r'src="([^"]+)"', response.text)
         # Remove size limit
-        normal_image_links = [link.split("?w=")[0] for link in image_links if "?w=" in link]
+        normal_image_links = [
+            link.split("?w=")[0] for link in image_links if "?w=" in link
+        ]
         # Remove duplicates
         normal_image_links = list(set(normal_image_links))
 
@@ -373,7 +375,9 @@ class ImageGenAsync:
         # Use regex to search for src=""
         image_links = regex.findall(r'src="([^"]+)"', content)
         # Remove size limit
-        normal_image_links = [link.split("?w=")[0] for link in image_links if "?w=" in link]
+        normal_image_links = [
+            link.split("?w=")[0] for link in image_links if "?w=" in link
+        ]
         # Remove duplicates
         normal_image_links = list(set(normal_image_links))
 

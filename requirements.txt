@@ -2,4 +2,4 @@ aiohttp
 regex
 requests
 fake-useragent
-curl_cffi
+curl_cffi==0.6.4
